@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     TextView q2;
     LinearLayout v2;
     String[] high,low;
+    CheckBox checkBox[];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,44 +29,13 @@ public class MainActivity extends AppCompatActivity {
         q2= (TextView)findViewById(R.id.q2) ;
         v2= (LinearLayout)findViewById(R.id.v2);
 
-        final SmileRating smileRating=(SmileRating)findViewById(R.id.smiley_rating2);
-        smileRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
-            @Override
-            public void onSmileySelected(int smiley) {
-                int i=0;
-                switch (smiley)
-                {
-                    case SmileRating.BAD:
-                    case SmileRating.GOOD:
-                    case SmileRating.OKAY:
-                    case SmileRating.TERRIBLE:
-                        v2.removeAllViews();
-                        for(String value:low){
-                            CheckBox checkBox=new CheckBox(MainActivity.this);
-                            checkBox.setText(value);
-                            checkBox.setId(i++);
-                            v2.addView(checkBox);
-                        }
-                        break;
-                    case SmileRating.GREAT:
-                        v2.removeAllViews();
-                        for(String value:high){
-                            CheckBox checkBox=new CheckBox(MainActivity.this);
-                            checkBox.setText(value);
-                            checkBox.setId(i++);
-                            v2.addView(checkBox);
-                        }
-                        break;
-                }
-            }
-        });
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("2");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               // String value = dataSnapshot.getValue(String.class);
+                // String value = dataSnapshot.getValue(String.class);
                 Log.d("ds1", "Value is: " +dataSnapshot.toString());
                 for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
                     if(dataSnapshot1.getKey().equals("high")){
@@ -95,6 +65,47 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+        checkBox = new CheckBox[10];
+
+        final SmileRating smileRating=(SmileRating)findViewById(R.id.smiley_rating2);
+        smileRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
+            @Override
+            public void onSmileySelected(int smiley) {
+                int i=0;
+                switch (smiley)
+                {
+                    case SmileRating.BAD:
+                    case SmileRating.GOOD:
+                    case SmileRating.OKAY:
+                    case SmileRating.TERRIBLE:
+                        v2.removeAllViews();
+                        for(String value:low){
+                            checkBox[i] = new CheckBox(MainActivity.this);
+                            checkBox[i].setText(value);
+                            checkBox[i].setId(i);
+                            v2.addView(checkBox[i]);
+                            i++;
+                        }
+                        break;
+                    case SmileRating.GREAT:
+                        v2.removeAllViews();
+                        for(String value:high){
+                            checkBox[i]=new CheckBox(MainActivity.this);
+                            checkBox[i].setText(value);
+                            checkBox[i].setId(i);
+                            v2.addView(checkBox[i]);
+                            i++;
+                        }
+                        break;
+                }
+
+
+            }
+        });
+
+
 
 
 
